@@ -1,10 +1,7 @@
 FROM golang
 
-WORKDIR /go/src/WeatherService
+WORKDIR /go/src/github.com/Darkren/WeatherService
 
 ADD . .
-
-RUN echo $GOPATH
-RUN echo $GOROOT
 
 CMD ["go", "test", "./..."]

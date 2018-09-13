@@ -3,10 +3,11 @@
 package json
 
 import (
-	"WeatherService/config"
 	"encoding/json"
 	"io/ioutil"
 	"time"
+
+	"github.com/Darkren/WeatherService/config"
 )
 
 // JSONConfig represents data type for configuration
