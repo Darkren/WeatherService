@@ -115,7 +115,10 @@ func TestGetString(t *testing.T) {
 		t.Errorf("Got err parsing %v", test)
 	}
 
-	name, err := config.getString("name")
+	// ignoring error - definitely this type
+	jsonConfig := config.(JSONConfig)
+
+	name, err := jsonConfig.getString("name")
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -142,7 +145,10 @@ func TestGetInt(t *testing.T) {
 		t.Errorf("Got err parsing %v", test)
 	}
 
-	id, err := config.getInt("id")
+	// ignoring error - definitely this type
+	jsonConfig := config.(JSONConfig)
+
+	id, err := jsonConfig.getInt("id")
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
@@ -169,7 +175,10 @@ func TestGetTime(t *testing.T) {
 		t.Errorf("Got err parsing %v", test)
 	}
 
-	birthday, err := config.getTime("birthday")
+	// ignoring error - definitely this type
+	jsonConfig := config.(JSONConfig)
+
+	birthday, err := jsonConfig.getTime("birthday")
 	if err != nil {
 		t.Errorf("Got err parsing %v", test)
 	}
