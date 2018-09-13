@@ -1,6 +1,6 @@
 FROM golang
 
-WORKDIR /go/src/github.com/Darkren/WeatherService
+WORKDIR /go/src/github.com/Darkren/weatherservice
 
 ADD . .
 

@@ -7,12 +7,12 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/Darkren/WeatherService/config"
+	"github.com/Darkren/weatherservice/config"
 )
 
-// JSONConfig represents data type for configuration
+// Config represents data type for configuration
 // parsed from JSON
-type JSONConfig struct {
+type Config struct {
 	c map[string]*json.RawMessage
 }
 
@@ -34,8 +34,8 @@ func Load(filePath string) (config.Config, error) {
 
 // Section returns config section by key. Used for nested objects
 // within configuration
-func (c JSONConfig) Section(key string) (config.Config, error) {
-	section := JSONConfig{}
+func (c Config) Section(key string) (config.Config, error) {
+	section := Config{}
 
 	if err := json.Unmarshal(*(c.c[key]), &(section.c)); err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c JSONConfig) Section(key string) (config.Config, error) {
 
 // GetString tries to get string value by key from configuration.
 // Returns acquired value or the specified default value
-func (c JSONConfig) GetString(key string, defaultVal string) string {
+func (c Config) GetString(key string, defaultVal string) string {
 	value, err := c.getString(key)
 	if err != nil {
 		return defaultVal
@@ -57,7 +57,7 @@ func (c JSONConfig) GetString(key string, defaultVal string) string {
 
 // MustGetString tries to get string value by key from configuration.
 // Returns acquired value or panics in case of any error
-func (c JSONConfig) MustGetString(key string) string {
+func (c Config) MustGetString(key string) string {
 	value, err := c.getString(key)
 	if err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func (c JSONConfig) MustGetString(key string) string {
 
 // GetInt tries to get int value by key from configuration.
 // Returns acquired value or the specified default value
-func (c JSONConfig) GetInt(key string, defaultVal int) int {
+func (c Config) GetInt(key string, defaultVal int) int {
 	value, err := c.getInt(key)
 	if err != nil {
 		return defaultVal
@@ -79,7 +79,7 @@ func (c JSONConfig) GetInt(key string, defaultVal int) int {
 
 // MustGetInt tries to get int value by key from configuration.
 // Returns acquired value or panics in case of any error
-func (c JSONConfig) MustGetInt(key string) int {
+func (c Config) MustGetInt(key string) int {
 	value, err := c.getInt(key)
 	if err != nil {
 		panic(err)
@@ -90,7 +90,7 @@ func (c JSONConfig) MustGetInt(key string) int {
 
 // GetTime tries to get time.Time value by key from configuration.
 // Returns acquired value or the specified default value
-func (c JSONConfig) GetTime(key string, defaultVal time.Time) time.Time {
+func (c Config) GetTime(key string, defaultVal time.Time) time.Time {
 	value, err := c.getTime(key)
 	if err != nil {
 		return defaultVal
@@ -101,7 +101,7 @@ func (c JSONConfig) GetTime(key string, defaultVal time.Time) time.Time {
 
 // MustGetTime tries to get time.Time value by key from configuration.
 // Returns acquired value or panics in case of any error
-func (c JSONConfig) MustGetTime(key string) time.Time {
+func (c Config) MustGetTime(key string) time.Time {
 	value, err := c.getTime(key)
 	if err != nil {
 		panic(err)
@@ -111,7 +111,7 @@ func (c JSONConfig) MustGetTime(key string) time.Time {
 }
 
 func new(jsonData []byte) (config.Config, error) {
-	config := JSONConfig{}
+	config := Config{}
 
 	if err := json.Unmarshal(jsonData, &(config.c)); err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func new(jsonData []byte) (config.Config, error) {
 	return config, nil
 }
 
-func (c JSONConfig) getString(key string) (string, error) {
+func (c Config) getString(key string) (string, error) {
 	var value string
 
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
@@ -130,7 +130,7 @@ func (c JSONConfig) getString(key string) (string, error) {
 	return value, nil
 }
 
-func (c JSONConfig) getInt(key string) (int, error) {
+func (c Config) getInt(key string) (int, error) {
 	var value int
 
 	if err := json.Unmarshal(*(c.c[key]), &value); err != nil {
@@ -140,7 +140,7 @@ func (c JSONConfig) getInt(key string) (int, error) {
 	return value, nil
 }
 
-func (c JSONConfig) getTime(key string) (time.Time, error) {
+func (c Config) getTime(key string) (time.Time, error) {
 	valueStr, err := c.getString(key)
 	if err != nil {
 		return time.Now(), err
