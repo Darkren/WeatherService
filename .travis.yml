@@ -1,0 +1,17 @@
+sudo: required
+
+language: go
+rvm:
+  - 1.8
+
+services:
+  - docker
+
+before_install:                                                                 
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
+  - dep ensure
+  - go build
+  - docker build -t golang/travistest .
+
+script:
+- docker run golang/travistest
