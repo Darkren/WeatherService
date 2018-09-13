@@ -1,9 +1,7 @@
 FROM golang
 
-RUN mkdir /app
+ADD . /go/src/WeatherService
 
-COPY . /app/
-
-WORKDIR /app
+WORKDIR /go/src/WeatherService
 
 CMD ["go", "test", "./..."]
