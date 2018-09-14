@@ -64,4 +64,6 @@ func (r *WeatherRequestRepository) SetComplete(id int64) error {
 			break
 		}
 	}
+
+	return nil
 }
