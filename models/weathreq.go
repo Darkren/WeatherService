@@ -8,7 +8,7 @@ import (
 type WeatherRequest struct {
 	ID      int64
 	Lat     float32
-	Long    float32
+	Lon     float32
 	Created time.Time
 	IsDone  bool
 }
