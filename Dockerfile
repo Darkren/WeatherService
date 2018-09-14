@@ -4,4 +4,4 @@ WORKDIR /go/src/github.com/Darkren/weatherservice
 
 ADD . .
 
-CMD ["go", "test", "./..."]
+CMD ["go", "test", "-v", "-race", "./..."]
