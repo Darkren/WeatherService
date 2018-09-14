@@ -4,6 +4,7 @@ package slice
 
 import (
 	"sync"
+	"time"
 
 	"github.com/Darkren/weatherservice/models"
 	"github.com/Darkren/weatherservice/repository"
@@ -29,6 +30,8 @@ func (r *WeatherRequestRepository) Add(req *models.WeatherRequest) (int64, error
 
 	r.serial++
 	req.ID = r.serial
+	req.Created = time.Now()
+	req.IsComplete = false
 
 	r.storage = append(r.storage, req)
 
@@ -47,4 +50,18 @@ func (r *WeatherRequestRepository) GetNotComplete() (*models.WeatherRequest, err
 	}
 
 	return nil, nil
+}
+
+// SetComplete marks the request as complete
+func (r *WeatherRequestRepository) SetComplete(id int64) error {
+	r.Lock()
+	defer r.Unlock()
+
+	for _, req := range r.storage {
+		if req.ID == id {
+			req.IsComplete = true
+
+			break
+		}
+	}
 }
