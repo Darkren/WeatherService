@@ -1,6 +1,6 @@
-// Package mock contains WeatherRequestRepository implementation
-// with mock data
-package mock
+// Package slice contains WeatherRequestRepository implementation
+// with slice as a storage
+package slice
 
 import (
 	"sync"
@@ -10,14 +10,14 @@ import (
 )
 
 // WeatherRequestRepository is WeatherRequestRepository interface implementation
-// containing mock data
+// containing data in slice
 type WeatherRequestRepository struct {
 	storage []*models.WeatherRequest
 	serial  int64
 	sync.Mutex
 }
 
-// New constructs and returns pointer to mock repository
+// New constructs and returns pointer to slice repository
 func New() repository.WeatherRequestRepository {
 	return &WeatherRequestRepository{}
 }
