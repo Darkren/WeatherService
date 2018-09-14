@@ -7,8 +7,8 @@ import (
 // WeatherRequest is an incoming request for weather
 type WeatherRequest struct {
 	ID         int64
-	Lat        float32
-	Lon        float32
+	Lat        float64 `json:"lat"`
+	Lon        float64 `json:"lon"`
 	Created    time.Time
 	IsComplete bool
 }
