@@ -25,28 +25,34 @@ func TestAdd(t *testing.T) {
 	}{
 		{
 			resp: &models.WeatherResponse{
-				Humidity:    45,
-				Pressure:    34,
-				RequestID:   1,
-				Temperature: 27,
+				RequestID: 1,
+				Weather: models.Weather{
+					Humidity:    45,
+					Pressure:    34,
+					Temperature: 27,
+				},
 			},
 			wantID: 1,
 		},
 		{
 			resp: &models.WeatherResponse{
-				Humidity:    23,
-				Pressure:    11,
-				RequestID:   2,
-				Temperature: 22,
+				RequestID: 2,
+				Weather: models.Weather{
+					Humidity:    23,
+					Pressure:    11,
+					Temperature: 22,
+				},
 			},
 			wantID: 2,
 		},
 		{
 			resp: &models.WeatherResponse{
-				Humidity:    87,
-				Pressure:    34,
-				RequestID:   3,
-				Temperature: 20,
+				RequestID: 3,
+				Weather: models.Weather{
+					Humidity:    87,
+					Pressure:    34,
+					Temperature: 20,
+				},
 			},
 			wantID: 3,
 		},
@@ -76,28 +82,34 @@ func TestByRequestID(t *testing.T) {
 	}{
 		{
 			resp: &models.WeatherResponse{
-				Humidity:    45,
-				Pressure:    34,
-				RequestID:   1,
-				Temperature: 27,
+				RequestID: 1,
+				Weather: models.Weather{
+					Humidity:    45,
+					Pressure:    34,
+					Temperature: 27,
+				},
 			},
 			wantID: 1,
 		},
 		{
 			resp: &models.WeatherResponse{
-				Humidity:    23,
-				Pressure:    11,
-				RequestID:   2,
-				Temperature: 22,
+				RequestID: 2,
+				Weather: models.Weather{
+					Humidity:    23,
+					Pressure:    11,
+					Temperature: 22,
+				},
 			},
 			wantID: 2,
 		},
 		{
 			resp: &models.WeatherResponse{
-				Humidity:    87,
-				Pressure:    34,
-				RequestID:   3,
-				Temperature: 20,
+				RequestID: 3,
+				Weather: models.Weather{
+					Humidity:    87,
+					Pressure:    34,
+					Temperature: 20,
+				},
 			},
 			wantID: 3,
 		},
