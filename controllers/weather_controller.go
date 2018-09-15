@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/Darkren/weatherservice/models"
 	"github.com/Darkren/weatherservice/repository"
@@ -54,7 +53,7 @@ func (c *WeatherController) Search(w http.ResponseWriter, r *http.Request) {
 		Lon: *req.Lon,
 	})
 	if err != nil {
-		log.Printf("%v Error inserting request with values lat: %v lon: %v", time.Now(),
+		log.Printf("Error inserting request with values lat: %v lon: %v",
 			req.Lat, req.Lon)
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -70,7 +69,7 @@ func (c *WeatherController) Search(w http.ResponseWriter, r *http.Request) {
 
 	respJSON, err := json.Marshal(resp)
 	if err != nil {
-		log.Fatalf("%v Error marshalling response: %v", time.Now(), resp)
+		log.Fatalf("Error marshalling response: %v", resp)
 
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -109,7 +108,7 @@ func (c *WeatherController) Result(w http.ResponseWriter, r *http.Request) {
 
 	result, err := c.WeatherResponseRepository.GetByRequestID(reqID)
 	if err != nil {
-		log.Printf("%v Got err while selecting result with reqID: %v", time.Now(), reqID)
+		log.Printf("Got err while selecting result with reqID: %v", reqID)
 
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -138,7 +137,7 @@ func (c *WeatherController) Result(w http.ResponseWriter, r *http.Request) {
 
 	respJSON, err := json.Marshal(resp)
 	if err != nil {
-		log.Fatalf("%v Error marshalling response: %v", time.Now(), resp)
+		log.Fatalf("Error marshalling response: %v", resp)
 
 		w.WriteHeader(http.StatusInternalServerError)
 
