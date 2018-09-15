@@ -92,7 +92,13 @@ func (s *Server) Start() {
 
 	port := s.config.MustGetInt("port")
 
-	http.ListenAndServe(fmt.Sprintf(":%d", port), router)
+	server := http.Server{Addr: fmt.Sprintf(":%d", port), Handler: router}
+
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Couldn't start server on port %v: %v", port, err)
+	}
+
+	log.Println("Server stopped")
 }
 
 func instantiateWeatherService(weatherServicesConfig config.Config,
