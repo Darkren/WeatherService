@@ -38,13 +38,16 @@ func (r *WeatherRequestRepository) Add(req *models.WeatherRequest) (int64, error
 	return req.ID, nil
 }
 
-// GetNotComplete returns first available not complete request
-func (r *WeatherRequestRepository) GetNotComplete() (*models.WeatherRequest, error) {
+// GetForProcessing returns first available not complete request and
+// as a side effect marks it as IsInProgress
+func (r *WeatherRequestRepository) GetForProcessing() (*models.WeatherRequest, error) {
 	r.Lock()
 	defer r.Unlock()
 
 	for _, req := range r.storage {
-		if !req.IsComplete {
+		if !req.IsComplete && !req.IsInProgress {
+			req.IsInProgress = true
+
 			return req, nil
 		}
 	}
@@ -52,14 +55,16 @@ func (r *WeatherRequestRepository) GetNotComplete() (*models.WeatherRequest, err
 	return nil, nil
 }
 
-// SetComplete marks the request as complete
-func (r *WeatherRequestRepository) SetComplete(id int64) error {
+// ProcessingFinished marks the request as complete, also setting IsInProgress to false
+// which is not neccessary but actually right
+func (r *WeatherRequestRepository) ProcessingFinished(id int64) error {
 	r.Lock()
 	defer r.Unlock()
 
 	for _, req := range r.storage {
 		if req.ID == id {
 			req.IsComplete = true
+			req.IsInProgress = false
 
 			break
 		}
