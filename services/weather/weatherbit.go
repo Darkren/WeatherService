@@ -1,3 +1,5 @@
+// Package weather contains weatherbit.io implementation of
+// weather service
 package weather
 
 import (
