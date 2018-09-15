@@ -1,4 +1,5 @@
-package workers
+// Package weather contains wheather info resolving worker
+package weather
 
 import (
 	"log"
@@ -11,12 +12,12 @@ import (
 	"github.com/Darkren/weatherservice/repository"
 )
 
-// WeatherWorker fetches next not complete request from the repository.
+// Worker fetches next not complete request from the repository.
 // Then it gets weather info from the external service and stores
 // response to the repository. In case external service returned an
 // error - the response is written with default values and
 // IsSucceeded equaling false
-type WeatherWorker struct {
+type Worker struct {
 	requestRepository  repository.WeatherRequestRepository
 	responseRepository repository.WeatherResponseRepository
 	weatherService     services.Weather
@@ -27,8 +28,8 @@ type WeatherWorker struct {
 func New(reqRepo repository.WeatherRequestRepository,
 	respRepo repository.WeatherResponseRepository,
 	weatherService services.Weather,
-	fetchTimeoutMs int) *WeatherWorker {
-	return &WeatherWorker{
+	fetchTimeoutMs int) *Worker {
+	return &Worker{
 		requestRepository:  reqRepo,
 		responseRepository: respRepo,
 		weatherService:     weatherService,
@@ -37,7 +38,7 @@ func New(reqRepo repository.WeatherRequestRepository,
 }
 
 // Run starts the worker
-func (w *WeatherWorker) Run() {
+func (w *Worker) Run() {
 	for {
 		// get next request
 		next, err := w.requestRepository.GetForProcessing()

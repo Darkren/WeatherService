@@ -4,7 +4,10 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+
+	"github.com/Darkren/weatherservice/services"
 
 	"github.com/gorilla/mux"
 
@@ -12,6 +15,8 @@ import (
 	"github.com/Darkren/weatherservice/controllers"
 	weatherReqRepo "github.com/Darkren/weatherservice/repository/weathreq/slice"
 	weatherRespRepo "github.com/Darkren/weatherservice/repository/weathresp/slice"
+	weatherService "github.com/Darkren/weatherservice/services/weatherbit"
+	weatherWorker "github.com/Darkren/weatherservice/workers/weather"
 )
 
 // Server is a server itself. Needs configuration to run
@@ -46,10 +51,32 @@ func (s *Server) Start() {
 
 	s.db = db*/
 
+	// get weather service config
+	weatherServicesConfig, err := s.config.Section("weatherServices")
+	if err != nil {
+		log.Fatalf("Got err reading weather services config section: %v", err)
+	}
+
+	weatherServiceName := s.config.MustGetString("weatherService")
+
+	// create weather resolving service
+	weatherService := instantiateWeatherService(weatherServicesConfig, weatherServiceName)
+
+	// create repositories
+	weatherRequestRepo := weatherReqRepo.New()
+	weatherResponseRepo := weatherRespRepo.New()
+
+	// create weather worker
+	weatherWorker := weatherWorker.New(weatherRequestRepo, weatherResponseRepo,
+		weatherService, s.config.MustGetInt("workerFetchTimeoutMs"))
+
+	// start worker
+	go weatherWorker.Run()
+
 	// create controllers
 	s.weatherController = &controllers.WeatherController{
-		WeatherRequestRepository:  weatherReqRepo.New(),
-		WeatherResponseRepository: weatherRespRepo.New(),
+		WeatherRequestRepository:  weatherRequestRepo,
+		WeatherResponseRepository: weatherResponseRepo,
 	}
 
 	// setup routing
@@ -66,4 +93,16 @@ func (s *Server) Start() {
 	port := s.config.MustGetInt("port")
 
 	http.ListenAndServe(fmt.Sprintf(":%d", port), router)
+}
+
+func instantiateWeatherService(weatherServicesConfig config.Config,
+	serviceName string) services.Weather {
+
+	weatherServiceConfig, err := weatherServicesConfig.Section(serviceName)
+	if err != nil {
+		log.Fatalf("Weather service %v not configured", serviceName)
+	}
+
+	return weatherService.New(weatherServiceConfig.MustGetString("key"),
+		weatherServiceConfig.MustGetString("baseURL"))
 }

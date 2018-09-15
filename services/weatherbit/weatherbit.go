@@ -1,6 +1,6 @@
-// Package weather contains weatherbit.io implementation of
+// Package weatherbit contains weatherbit.io implementation of
 // weather service
-package weather
+package weatherbit
 
 import (
 	"encoding/json"
@@ -12,6 +12,10 @@ import (
 
 	"github.com/Darkren/weatherservice/models"
 	"github.com/Darkren/weatherservice/services"
+)
+
+const (
+	hgMlsInMb = 0.750030101
 )
 
 // Weatherbit is an implementation of weather service which
@@ -64,6 +68,9 @@ func (w *Weatherbit) Get(lat, lon float64) (*models.Weather, error) {
 	if weather.ObservationsCount == 0 {
 		return nil, fmt.Errorf("No ovservations found")
 	}
+
+	// needed conversion ot hg mls cause weatherbit returns pressure in millibars
+	weather.Observations[0].Pressure = weather.Observations[0].Pressure * hgMlsInMb
 
 	return &models.Weather{
 		Temperature: int(math.Round(weather.Observations[0].Temperature)),
