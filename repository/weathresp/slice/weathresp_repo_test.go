@@ -70,7 +70,7 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestByRequestID(t *testing.T) {
+func TestGetByRequestID(t *testing.T) {
 	repo := New()
 	if repo == nil {
 		t.Errorf("Got err on creating repo")

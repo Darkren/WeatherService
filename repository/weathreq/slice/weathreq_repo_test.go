@@ -58,7 +58,7 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestGetNotComplete(t *testing.T) {
+func TestGetForProcessing(t *testing.T) {
 	repo := New()
 	if repo == nil {
 		t.Errorf("Got err on creating repo")
@@ -106,9 +106,9 @@ func TestGetNotComplete(t *testing.T) {
 		test.req.IsComplete = true
 	}
 
-	notComplete, err := repo.GetNotComplete()
+	notComplete, err := repo.GetForProcessing()
 	if err != nil {
-		t.Error("Got err on GetNotComplete")
+		t.Error("Got err on GetForProcessing")
 	}
 
 	if notComplete != nil {
@@ -117,9 +117,9 @@ func TestGetNotComplete(t *testing.T) {
 
 	tests[1].req.IsComplete = false
 
-	notComplete, err = repo.GetNotComplete()
+	notComplete, err = repo.GetForProcessing()
 	if err != nil {
-		t.Error("Got err on GetNotComplete")
+		t.Error("Got err on GetForProcessing")
 	}
 
 	if notComplete == nil {
@@ -128,9 +128,12 @@ func TestGetNotComplete(t *testing.T) {
 	if notComplete.IsComplete {
 		t.Errorf("Got %v, IsComplete should be false", notComplete)
 	}
+	if !notComplete.IsInProgress {
+		t.Errorf("Got %v, IsInProgress should be true", notComplete)
+	}
 }
 
-func TestSetComplete(t *testing.T) {
+func TestProcessingFinished(t *testing.T) {
 	repo := New()
 	if repo == nil {
 		t.Errorf("Got err on creating repo")
@@ -174,12 +177,15 @@ func TestSetComplete(t *testing.T) {
 		}
 	}
 
-	err := repo.SetComplete(3)
+	err := repo.ProcessingFinished(3)
 	if err != nil {
-		t.Error("Got err in SetComplete")
+		t.Error("Got err in ProcessingFinished")
 	}
 
 	if !tests[2].req.IsComplete {
 		t.Error("IsComplete should be true")
+	}
+	if tests[2].req.IsInProgress {
+		t.Error("IsInProgress should be false")
 	}
 }
