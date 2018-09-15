@@ -45,7 +45,7 @@ func (r *WeatherRequestRepository) GetForProcessing() (*models.WeatherRequest, e
 	defer r.Unlock()
 
 	for _, req := range r.storage {
-		if !req.IsComplete {
+		if !req.IsComplete && !req.IsInProgress {
 			req.IsInProgress = true
 
 			return req, nil

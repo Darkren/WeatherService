@@ -2,6 +2,7 @@ package workers
 
 import (
 	"log"
+	"time"
 
 	"github.com/Darkren/weatherservice/models"
 
@@ -14,20 +15,24 @@ import (
 // Then it gets weather info from the external service and stores
 // response to the repository. In case external service returned an
 // error - the response is written with default values and
-// IsSucceeded equaling false. Not fully thread-safe.
-// Concurrent workers will end up processing same request
+// IsSucceeded equaling false
 type WeatherWorker struct {
 	requestRepository  repository.WeatherRequestRepository
 	responseRepository repository.WeatherResponseRepository
 	weatherService     services.Weather
+	fetchTimeoutMs     int
 }
 
 // New constructs and returns worker
 func New(reqRepo repository.WeatherRequestRepository,
-	respRepo repository.WeatherResponseRepository) *WeatherWorker {
+	respRepo repository.WeatherResponseRepository,
+	weatherService services.Weather,
+	fetchTimeoutMs int) *WeatherWorker {
 	return &WeatherWorker{
 		requestRepository:  reqRepo,
 		responseRepository: respRepo,
+		weatherService:     weatherService,
+		fetchTimeoutMs:     fetchTimeoutMs,
 	}
 }
 
@@ -35,9 +40,15 @@ func New(reqRepo repository.WeatherRequestRepository,
 func (w *WeatherWorker) Run() {
 	for {
 		// get next request
-		next, err := w.requestRepository.GetNotComplete()
+		next, err := w.requestRepository.GetForProcessing()
 		if err != nil {
 			log.Println("Got err fetching next request")
+
+			continue
+		}
+
+		if next == nil {
+			time.Sleep(time.Duration(w.fetchTimeoutMs) * time.Millisecond)
 
 			continue
 		}
@@ -60,6 +71,6 @@ func (w *WeatherWorker) Run() {
 			w.responseRepository.Add(resp)
 		}
 
-		w.requestRepository.SetComplete(next.ID)
+		w.requestRepository.ProcessingFinished(next.ID)
 	}
 }
