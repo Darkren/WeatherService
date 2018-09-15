@@ -1,6 +1,6 @@
-// Package weather contains weatherbit.io implementation of
+// Package weatherbit contains weatherbit.io implementation of
 // weather service
-package weather
+package weatherbit
 
 import (
 	"encoding/json"
