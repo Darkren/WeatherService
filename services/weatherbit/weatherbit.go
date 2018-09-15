@@ -14,6 +14,10 @@ import (
 	"github.com/Darkren/weatherservice/services"
 )
 
+const (
+	hgMlsInMb = 0.750030101
+)
+
 // Weatherbit is an implementation of weather service which
 // relise on weatherbit.io API
 type Weatherbit struct {
@@ -64,6 +68,9 @@ func (w *Weatherbit) Get(lat, lon float64) (*models.Weather, error) {
 	if weather.ObservationsCount == 0 {
 		return nil, fmt.Errorf("No ovservations found")
 	}
+
+	// needed conversion ot hg mls cause weatherbit returns pressure in millibars
+	weather.Observations[0].Pressure = weather.Observations[0].Pressure * hgMlsInMb
 
 	return &models.Weather{
 		Temperature: int(math.Round(weather.Observations[0].Temperature)),
