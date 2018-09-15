@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Darkren/weatherservice/graceful"
 	"github.com/Darkren/weatherservice/services"
 
 	"github.com/gorilla/mux"
@@ -94,9 +95,13 @@ func (s *Server) Start() {
 
 	server := http.Server{Addr: fmt.Sprintf(":%d", port), Handler: router}
 
+	shutdown := graceful.Shutdown(&server)
+
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("Couldn't start server on port %v: %v", port, err)
 	}
+
+	<-shutdown
 
 	log.Println("Server stopped")
 }
