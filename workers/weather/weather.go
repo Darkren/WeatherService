@@ -43,7 +43,7 @@ func (w *Worker) Run() {
 		// get next request
 		next, err := w.requestRepository.GetForProcessing()
 		if err != nil {
-			log.Println("Got err fetching next request")
+			log.Printf("Got err fetching next request: %v", err)
 
 			continue
 		}

@@ -10,5 +10,14 @@
         }
     },
 
-    "workerFetchTimeoutMs": 300
+    "workerFetchTimeoutMs": 300,
+
+    "db": {
+        "host": "pgsql",
+        "port": 5432,
+        "user": "postgres",
+        "password": "",
+        "dbName": "weatherservice",
+        "sslmode": "disable"
+    }
 }

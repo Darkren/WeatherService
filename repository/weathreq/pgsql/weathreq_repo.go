@@ -18,16 +18,8 @@ type WeatherRequestRepository struct {
 }
 
 // New constructs and returns pointer to repository connected to the PgSQL DB
-func New(user, password, dbName, host string, port int) (repository.WeatherRequestRepository, error) {
-	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d",
-		user, password, dbName, host, port)
-
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		return nil, err
-	}
-
-	return &WeatherRequestRepository{db: db}, nil
+func New(db *sql.DB) repository.WeatherRequestRepository {
+	return &WeatherRequestRepository{db: db}
 }
 
 // Add stores request in DB
@@ -73,6 +65,8 @@ func (r *WeatherRequestRepository) GetForProcessing() (*models.WeatherRequest, e
 		if err != nil {
 			return nil, err
 		}
+	} else {
+		return nil, nil
 	}
 
 	return &request, nil

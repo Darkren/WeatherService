@@ -3,6 +3,7 @@
 package server
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,8 +15,8 @@ import (
 
 	"github.com/Darkren/weatherservice/config"
 	"github.com/Darkren/weatherservice/controllers"
-	weatherReqRepo "github.com/Darkren/weatherservice/repository/weathreq/slice"
-	weatherRespRepo "github.com/Darkren/weatherservice/repository/weathresp/slice"
+	weatherReqRepo "github.com/Darkren/weatherservice/repository/weathreq/pgsql"
+	weatherRespRepo "github.com/Darkren/weatherservice/repository/weathresp/pgsql"
 	weatherService "github.com/Darkren/weatherservice/services/weatherbit"
 	weatherWorker "github.com/Darkren/weatherservice/workers/weather"
 )
@@ -33,24 +34,30 @@ func New(config config.Config) *Server {
 
 // Start does all the needed setup and runs the server
 func (s *Server) Start() {
-	/*dbConfigSection, err := s.config.Section("db")
+	dbConfigSection, err := s.config.Section("db")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error reading DB config: %v", err)
 	}
 
-	dbLogin := dbConfigSection.MustGetString("login")
+	dbHost := dbConfigSection.MustGetString("host")
+	dbPort := dbConfigSection.MustGetInt("port")
+	dbUser := dbConfigSection.MustGetString("user")
 	dbPassword := dbConfigSection.MustGetString("password")
-	dbName := dbConfigSection.MustGetString("name")
+	dbName := dbConfigSection.MustGetString("dbName")
+	sslmode := dbConfigSection.MustGetString("sslmode")
 
-	dbConnStr := fmt.Sprintf("user=%s password=%s dbname=%s", dbLogin,
-		dbPassword, dbName)
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=%s",
+		dbUser, dbPassword, dbName, dbHost, dbPort, sslmode)
 
-	db, err := sql.Open("postgres", dbConnStr)
+	// get db connection
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Couldn't establish connection to DB: %v", err)
 	}
 
-	s.db = db*/
+	// create repositories
+	weatherRequestRepo := weatherReqRepo.New(db)
+	weatherResponseRepo := weatherRespRepo.New(db)
 
 	// get weather service config
 	weatherServicesConfig, err := s.config.Section("weatherServices")
@@ -62,10 +69,6 @@ func (s *Server) Start() {
 
 	// create weather resolving service
 	weatherService := instantiateWeatherService(weatherServicesConfig, weatherServiceName)
-
-	// create repositories
-	weatherRequestRepo := weatherReqRepo.New()
-	weatherResponseRepo := weatherRespRepo.New()
 
 	// create weather worker
 	weatherWorker := weatherWorker.New(weatherRequestRepo, weatherResponseRepo,
@@ -96,6 +99,8 @@ func (s *Server) Start() {
 	server := http.Server{Addr: fmt.Sprintf(":%d", port), Handler: router}
 
 	shutdown := graceful.Shutdown(&server)
+
+	log.Printf("Server started listening on port: %v", port)
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("Couldn't start server on port %v: %v", port, err)
