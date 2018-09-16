@@ -1,0 +1,23 @@
+{
+    "port": 8080,
+
+    "weatherService": "weatherbit",
+
+    "weatherServices": {
+        "weatherbit": {
+            "key": "ea3a97ff41524f7499584aa5403ba4b4",
+            "baseURL": "https://api.weatherbit.io/v2.0"
+        }
+    },
+
+    "workerFetchTimeoutMs": 300,
+
+    "db": {
+        "host": "pgsql",
+        "port": 5432,
+        "user": "postgres",
+        "password": "1234",
+        "dbName": "weatherservice",
+        "sslmode": "disable"
+    }
+}

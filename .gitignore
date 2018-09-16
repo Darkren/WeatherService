@@ -13,3 +13,7 @@
 
 # Vendor
 vendor
+
+# Binary
+debug
+weatherservice

@@ -11,7 +11,7 @@ before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
   - dep ensure
   - go build
-  - docker build -t golang/travistest .
+  - docker build -t golang/app .
 
-script:
-- docker run golang/travistest
+#script:
+#- docker run golang/app
