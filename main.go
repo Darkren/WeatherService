@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	_ "github.com/lib/pq"
+
 	"github.com/Darkren/weatherservice/config/json"
 	"github.com/Darkren/weatherservice/server"
 )
