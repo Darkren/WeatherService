@@ -1,6 +1,6 @@
 package pgsql
 
-import (
+/*import (
 	"testing"
 
 	_ "github.com/lib/pq"
@@ -118,3 +118,4 @@ func TestGetByRequestID(t *testing.T) {
 		t.Error("Got err in GetByRequestID")
 	}
 }
+*/
