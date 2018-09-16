@@ -28,8 +28,8 @@ type Weatherbit struct {
 // New constructs service using provided API key and base URL
 func New(key, baseURL string) services.Weather {
 	return &Weatherbit{
-		key:     "ea3a97ff41524f7499584aa5403ba4b4",
-		baseURL: "https://api.weatherbit.io/v2.0",
+		key:     key,
+		baseURL: baseURL,
 	}
 }
 
