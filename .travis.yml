@@ -13,5 +13,5 @@ before_install:
   - go build
   - docker build -t golang/app .
 
-script:
-- docker run golang/app
+#script:
+#- docker run golang/app

@@ -6,7 +6,7 @@ ADD . .
 
 EXPOSE 8080
 
-CMD ["go", "test", "-v", "-race", "./..."]
+CMD ["./weatherservice"]
 
 #sudo docker run --name weatherservice --link pgsql:postgres -p 8080:8080 golang/app
 #sudo docker build -t pgsql/weatherservice .
